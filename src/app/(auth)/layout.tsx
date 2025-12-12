@@ -1,11 +1,8 @@
-type Props = {
-  children: React.ReactNode;
-};
+import type { ReactNode } from "react";
+import { AuthLayout } from "@/features/auth/components/auth-layout";
 
-export default function layout({ children }: Props) {
-  return (
-    <div className="flex min-h-svh flex-col items-center justify-center bg-muted p-6 md:p-10">
-      <div className="w-full max-w-sm">{children}</div>
-    </div>
-  );
-}
+const Layout = ({ children }: { children: ReactNode }) => (
+  <AuthLayout>{children}</AuthLayout>
+);
+
+export default Layout;
