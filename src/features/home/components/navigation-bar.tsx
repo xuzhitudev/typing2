@@ -142,7 +142,7 @@ export function NavigationBar() {
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-            <Link href="/docs">关于我们</Link>
+            <Link href="/about">关于我们</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
       </NavigationMenuList>
