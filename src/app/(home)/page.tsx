@@ -1,10 +1,16 @@
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import Link from "next/link";
-import { getDemos } from "@/app/actions/demo-actions";
+import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
+import { getQueryClient } from "@/trpc/server";
 import { DemoManager } from "./demo-manager";
 
 export default async function Home() {
-  const demos = await getDemos();
+  const queryClient = getQueryClient();
+  // setTimeout(() => {
+  //   queryClient.prefetchQuery(trpc.getDemos.queryOptions());
+  // }, 3000);
+
   return (
     <section className="hero safe-paddings relative pt-[168px] md:pt-[88px] lg:pt-32 xl:pt-[152px]">
       <div className="relative z-10 mx-auto max-w-[1100px] md:px-4 lg:max-w-none lg:px-8 xl:px-8">
@@ -22,7 +28,11 @@ export default async function Home() {
             </Button>
             <Button variant="outline">了解更多</Button>
           </div>
-          <DemoManager demos={demos} />
+          <HydrationBoundary state={dehydrate(queryClient)}>
+            <Suspense fallback={<div>Loading...</div>}>
+              <DemoManager />
+            </Suspense>
+          </HydrationBoundary>
         </div>
       </div>
     </section>

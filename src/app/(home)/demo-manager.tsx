@@ -1,20 +1,25 @@
 "use client";
 
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { createDemo, deleteDemo, updateDemo } from "@/app/actions/demo-actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useTRPC } from "@/trpc/client";
 
-type Demo = {
-  id: string;
-  name: string;
-  age: number | null;
-  createdAt: Date;
-  updatedAt: Date;
-};
+// type Demo = {
+//   id: string;
+//   name: string;
+//   age: number | null;
+//   createdAt: Date;
+//   updatedAt: Date;
+// };
 
-export function DemoManager({ demos }: { demos: Demo[] }) {
+export function DemoManager() {
   const [editId, setEditId] = useState<string | null>(null);
+
+  const trpc = useTRPC();
+  const { data: demos = [] } = useSuspenseQuery(trpc.getDemos.queryOptions());
 
   return (
     <div className="mt-10 w-full max-w-2xl rounded-xl border bg-card p-6 text-left text-card-foreground shadow-sm">
