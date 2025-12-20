@@ -1,7 +1,10 @@
 import Link from "next/link";
+import { getDemos } from "@/app/actions/demo-actions";
 import { Button } from "@/components/ui/button";
+import { DemoManager } from "./demo-manager";
 
-export default function Home() {
+export default async function Home() {
+  const demos = await getDemos();
   return (
     <section className="hero safe-paddings relative pt-[168px] md:pt-[88px] lg:pt-32 xl:pt-[152px]">
       <div className="relative z-10 mx-auto max-w-[1100px] md:px-4 lg:max-w-none lg:px-8 xl:px-8">
@@ -19,6 +22,7 @@ export default function Home() {
             </Button>
             <Button variant="outline">了解更多</Button>
           </div>
+          <DemoManager demos={demos} />
         </div>
       </div>
     </section>
