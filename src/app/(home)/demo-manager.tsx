@@ -99,7 +99,11 @@ export function DemoManager({ demos }: { demos: Demo[] }) {
                     <span className="font-medium">{demo.name}</span>
                     <span className="text-muted-foreground text-xs">
                       Age: {demo.age ?? "-"} • Created:{" "}
-                      {new Date(demo.createdAt).toLocaleDateString()}
+                      {new Date(demo.createdAt).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                      })}
                     </span>
                   </div>
                 </div>
