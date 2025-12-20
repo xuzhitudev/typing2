@@ -24,7 +24,7 @@ const LoginBar = () => {
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
-          router.push("/signin");
+          router.push("/login");
         },
       },
     });

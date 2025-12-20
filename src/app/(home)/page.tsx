@@ -2,14 +2,13 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import Link from "next/link";
 import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
-import { getQueryClient } from "@/trpc/server";
+import { getQueryClient, trpc } from "@/trpc/server";
 import { DemoManager } from "./demo-manager";
 
 export default async function Home() {
   const queryClient = getQueryClient();
-  // setTimeout(() => {
-  //   queryClient.prefetchQuery(trpc.getDemos.queryOptions());
-  // }, 3000);
+
+  queryClient.prefetchQuery(trpc.getDemos.queryOptions());
 
   return (
     <section className="hero safe-paddings relative pt-[168px] md:pt-[88px] lg:pt-32 xl:pt-[152px]">
