@@ -1,5 +1,13 @@
-import { relations } from "drizzle-orm";
-import { boolean, index, integer, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { relations, sql } from "drizzle-orm";
+import {
+  boolean,
+  index,
+  integer,
+  pgTable,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
+import { nanoid } from "nanoid";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -102,3 +110,93 @@ export const accountRelations = relations(account, ({ one }) => ({
     references: [user.id],
   }),
 }));
+
+// 课程表
+export const course = pgTable("course", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => nanoid()),
+  title: text().notNull(),
+  description: text().notNull(),
+  image: text("image"),
+  creator: text().notNull(),
+  duration: integer().default(0), // 学习时长，单位是秒
+  latest: timestamp(), // 最新学习时间
+  chapterTotal: integer("chapter_total").default(0), // 章节总数
+  chapterIndex: integer("chapter_index").default(0), // 当前章节
+  isShared: boolean("is_shared").default(false),
+  subscriberIds: text("subscriber_ids")
+    .array()
+    .notNull()
+    .default(sql`'{}'::text[]`), // 订阅者ID
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
+
+// 章节表
+export const chapter = pgTable("chapter", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => nanoid()),
+  title: text().notNull(),
+  description: text().notNull(),
+  creator: text().notNull(),
+  duration: integer().default(0), // 章节学习时长（秒）
+  latest: timestamp(), // 最新学习时间
+  sentenceTotal: integer("sentence_total").default(0), // 句子总数
+  sentenceIndex: integer("sentence_index").default(0), // 当前进度
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  courseId: text("course_id"),
+});
+
+// 句子表
+export const sentence = pgTable("sentence", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => nanoid()),
+  cn: text().notNull(),
+  en: text().notNull(),
+  description: text(), // 英文解释
+  audio: text(), // 音频地址
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  updatedAt: timestamp("updated_at"),
+  chapterId: text("chapter_id"),
+});
+
+// 短语或单词表
+export const phrase = pgTable("phrase", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => nanoid()),
+  cn: text().notNull(),
+  en: text().notNull(),
+  phonetic: text(), // 音标
+  speech: text(), // 词性
+  audio: text(), // 音频地址
+  basicDefinition: text("basic_definition"), // 基本含义
+  contextualMeaning: text("contextual_meaning"), // 上下文含义
+  synonyms: text("synonyms").array().notNull().default(sql`'{}'::text[]`), // 同义词
+  antonyms: text("antonyms").array().notNull().default(sql`'{}'::text[]`), // 反义词
+  commonPhrases: text("common_phrases")
+    .array()
+    .notNull()
+    .default(sql`'{}'::text[]`), // 常用短语
+  exampleSentences: text("example_sentences"), // 例句
+  mnemonics: text("mnemonics"), // 记忆技巧
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  updatedAt: timestamp("updated_at"),
+  sentenceId: text("sentence_id"),
+});
